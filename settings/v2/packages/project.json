@@ -1,4 +1,36 @@
 {
   "__version__": "1.0.4",
-  "custom_joint_texture_layouts": []
+  "custom_joint_texture_layouts": [],
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "PROJECTILE"
+      },
+      {
+        "index": 2,
+        "name": "BODY"
+      },
+      {
+        "index": 3,
+        "name": "LAND"
+      },
+      {
+        "index": 4,
+        "name": "HEAD"
+      },
+      {
+        "index": 5,
+        "name": "STEP"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 60,
+      "2": 42,
+      "3": 6,
+      "4": 34,
+      "5": 22
+    }
+  }
 }
