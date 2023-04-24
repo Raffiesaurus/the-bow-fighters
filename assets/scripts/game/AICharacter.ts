@@ -58,29 +58,34 @@ export class AICharacter extends Character {
 
     move() {
         if (this.isHit) {
-            if (randomRangeInt(0, 101) > 25) {
+            if (randomRangeInt(0, 101) > 5) {
                 this.aiAnims.onWalk(true)
                 if (randomRangeInt(0, 2)) {
-                    this.node.translate(v3(-this.moveSpeed, 0, 0))
+                    // let moveCount = 10
+                    let moveCount = randomRange(15, 40);
+                    tween(this.node).to(1, { position: v3(this.node.position.x + moveCount, this.node.position.y, this.node.position.z) }, { easing: easing.smooth }).start();
                 } else {
-                    this.node.translate(v3(this.moveSpeed, 0, 0))
+                    let moveCount = randomRange(-40, -15);
+                    tween(this.node).to(1, { position: v3(this.node.position.x + moveCount, this.node.position.y, this.node.position.z) }, { easing: easing.smooth }).start();
                 }
             } else {
                 this.stopMovement();
             }
         } else {
-            if (randomRangeInt(0, 101) > 75) {
+            if (randomRangeInt(0, 101) > 25) {
                 this.aiAnims.onWalk(true)
                 if (randomRangeInt(0, 2)) {
-                    this.node.translate(v3(-this.moveSpeed, 0, 0))
+                    let moveCount = randomRange(15, 40);
+                    tween(this.node).to(1, { position: v3(this.node.position.x + moveCount, this.node.position.y, this.node.position.z) }, { easing: easing.smooth }).start();
                 } else {
-                    this.node.translate(v3(this.moveSpeed, 0, 0))
+                    let moveCount = randomRange(-40, -15);
+                    tween(this.node).to(1, { position: v3(this.node.position.x + moveCount, this.node.position.y, this.node.position.z) }, { easing: easing.smooth }).start();
                 }
             } else {
                 this.stopMovement();
             }
         }
-        this.scheduleOnce(this.aim, randomRange(0.5, 1.25));
+        this.scheduleOnce(this.aim, randomRange(0.85, 1.75));
     }
 
     stopMovement() {
@@ -88,7 +93,7 @@ export class AICharacter extends Character {
     }
 
     aim() {
-        stop
+        this.stopMovement();
         let playerPos = GameManager.GetPlayerCharacter().node.getWorldPosition().clone();
         playerPos.y += randomRange(0, 100);
 
