@@ -58,7 +58,7 @@
       "z": 0.013
     },
     "_mobility": 0,
-    "_layer": 33554432,
+    "_layer": 2,
     "_euler": {
       "__type__": "cc.Vec3",
       "x": 0,
@@ -111,7 +111,6 @@
     "rb": {
       "__id__": 8
     },
-    "arrowSprite": null,
     "_id": ""
   },
   {

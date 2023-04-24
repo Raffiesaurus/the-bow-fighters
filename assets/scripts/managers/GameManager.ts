@@ -35,6 +35,7 @@ export class GameManager extends Component {
             GameManager.isPlayerTurn = !GameManager.isPlayerTurn;
             if (!GameManager.isGameOver)
                 customEvent.emit('newTurn');
+                customEvent.emit('zoomIn', GameManager.isPlayerTurn);
         }, timeDelay)
     }
 
@@ -52,6 +53,7 @@ export class GameManager extends Component {
                 GameManager.isInGame = true;
                 GameManager.isGameOver = false;
                 customEvent.emit('newTurn');
+                customEvent.emit('zoomIn', GameManager.isPlayerTurn);
                 break;
             case GAME_STATE.DEFEAT:
             case GAME_STATE.WIN:

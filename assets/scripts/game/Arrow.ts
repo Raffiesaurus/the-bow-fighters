@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider2D, Component, Contact2DType, IPhysics2DContact, misc, RigidBody2D, Sprite, v2, v3, Vec2 } from 'cc';
+import { _decorator, BoxCollider2D, Component, Contact2DType, IPhysics2DContact, misc, RigidBody2D, v2, v3, Vec2 } from 'cc';
 import { GameUIManager } from '../managers/GameUIManager';
 import { COLLIDER_GROUPS } from '../util/Enums';
 import { customEvent } from '../util/Utils';
@@ -12,13 +12,12 @@ export class Arrow extends Component {
 
     @property(RigidBody2D) private rb: RigidBody2D = null;
 
-    @property(Sprite) private arrowSprite: Sprite = null;
-
     private directionVector: Vec2 = v2()
 
     private useForce: boolean = false;
 
     fire(direction: Vec2, force: number) {
+        customEvent.emit('zoomOut');
         this.node.eulerAngles = v3(0, 0, 0);
         this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this)
         this.directionVector = direction.clone();

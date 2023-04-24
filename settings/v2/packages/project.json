@@ -51,7 +51,23 @@
   "general": {
     "designResolution": {
       "width": 1440,
-      "height": 810
+      "height": 810,
+      "fitHeight": false,
+      "fitWidth": true
     }
-  }
+  },
+  "layer": [
+    {
+      "name": "GAME_ENVIRONMENT",
+      "value": 2
+    },
+    {
+      "name": "GAME_CHARACTER",
+      "value": 4
+    },
+    {
+      "name": "GAME_UI",
+      "value": 8
+    }
+  ]
 }
