@@ -1,5 +1,6 @@
 import { _decorator, BoxCollider2D, Component, Contact2DType, EventKeyboard, Input, input, IPhysics2DContact, KeyCode, RigidBody2D, v2, v3 } from 'cc';
-import { COLLIDER_GROUPS } from '../util/Enums';
+import { AudioManager } from '../managers/AudioManager';
+import { COLLIDER_GROUPS, SFX } from '../util/Enums';
 import { PlayerAnims } from './PlayerAnims';
 const { ccclass, property } = _decorator;
 
@@ -55,6 +56,7 @@ export class PlayerMovement extends Component {
         if (event.keyCode == KeyCode.KEY_A || event.keyCode == KeyCode.ARROW_LEFT) {
             this.moveLeft = true;
             this.playerAnim.onWalk(true)
+            AudioManager.PlayWalk();
         }
 
         if (event.keyCode == KeyCode.KEY_S || event.keyCode == KeyCode.ARROW_DOWN) {
@@ -66,6 +68,7 @@ export class PlayerMovement extends Component {
         if (event.keyCode == KeyCode.KEY_D || event.keyCode == KeyCode.ARROW_RIGHT) {
             this.moveRight = true;
             this.playerAnim.onWalk(true)
+            AudioManager.PlayWalk();
         }
 
         if (event.keyCode == KeyCode.KEY_W || event.keyCode == KeyCode.ARROW_UP) {
@@ -73,6 +76,7 @@ export class PlayerMovement extends Component {
                 this.moveUp = true;
                 this.rb.gravityScale = 1;
                 this.isGrounded = false;
+                AudioManager.PlaySFX(SFX.JUMP)
                 if (this.moveLeft) {
                     this.rb.applyForceToCenter(v2(-this.jumpSideForce, this.jumpForce), true);
                 } else if (this.moveRight) {
@@ -132,6 +136,7 @@ export class PlayerMovement extends Component {
         this.moveUp = false;
         // this.rb.linearVelocity = v2(0, 0)
         this.playerAnim.onWalk(false)
+        AudioManager.StopWalk();
     }
 }
 

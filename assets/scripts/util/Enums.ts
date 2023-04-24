@@ -24,4 +24,10 @@ export enum GAME_STATE {
 
 export enum SFX {
     CLICK = 0,
+    ARROW_BODY = 1,
+    ARROW_GROUND = 2,
+    FIRE_BOW = 3,
+    JUMP = 4,
+    POWERUP_ACTIVATE = 5,
+    WALK = 6,
 }

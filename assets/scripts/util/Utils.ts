@@ -48,9 +48,9 @@ export const checkLocalStorage = () => {
 
     let mute = sys.localStorage.getItem('mute');
     if (mute == null) {
-        setAudioMute(true);
+        setAudioMute(false);
     } else {
-        audioMute = mute === 'true';
+        audioMute = (mute === 'true');
     }
 
 }

@@ -1,8 +1,9 @@
 import { _decorator, BoxCollider2D, Component, Contact2DType, IPhysics2DContact, misc, RigidBody2D, v2, v3, Vec2 } from 'cc';
 import { GameUIManager } from '../managers/GameUIManager';
-import { COLLIDER_GROUPS } from '../util/Enums';
+import { COLLIDER_GROUPS, SFX } from '../util/Enums';
 import { customEvent } from '../util/Utils';
 import { Character } from './Character';
+import { AudioManager } from '../managers/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Arrow')
@@ -17,6 +18,7 @@ export class Arrow extends Component {
     private useForce: boolean = false;
 
     fire(direction: Vec2, force: number) {
+        AudioManager.PlaySFX(SFX.FIRE_BOW)
         customEvent.emit('zoomOut');
         this.node.eulerAngles = v3(0, 0, 0);
         this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this)
@@ -34,13 +36,16 @@ export class Arrow extends Component {
         if (otherCollider.group == COLLIDER_GROUPS.HEAD) {
             console.log('Head shot');
             otherCollider.node.getComponent(Character).getHit(20);
+            AudioManager.PlaySFX(SFX.ARROW_BODY)
             this.killNode();
         } else if (otherCollider.group == COLLIDER_GROUPS.BODY) {
             console.log('Body shot');
             otherCollider.node.getComponent(Character).getHit(10);
+            AudioManager.PlaySFX(SFX.ARROW_BODY)
             this.killNode();
         } else if (otherCollider.group == COLLIDER_GROUPS.LAND || otherCollider.group == COLLIDER_GROUPS.STEP) {
             console.log('Missed shot');
+            AudioManager.PlaySFX(SFX.ARROW_GROUND)
             this.killNode();
         }
     }

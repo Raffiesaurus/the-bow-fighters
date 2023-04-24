@@ -1,6 +1,7 @@
 import { _decorator, Component, Label } from 'cc';
-import { GAME_STATE } from '../util/Enums';
+import { GAME_STATE, SFX } from '../util/Enums';
 import { customEvent } from '../util/Utils';
+import { AudioManager } from '../managers/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameOver')
@@ -20,6 +21,7 @@ export class GameOver extends Component {
 
     onExitButton() {
         customEvent.emit('gameStateChange', GAME_STATE.MAIN_MENU);
+        AudioManager.PlaySFX(SFX.CLICK);
     }
 
 }

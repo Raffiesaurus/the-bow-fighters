@@ -1,5 +1,6 @@
 import { _decorator, Button, Component, EditBox, Node } from 'cc';
-import { GAME_STATE } from '../util/Enums';
+import { AudioManager } from '../managers/AudioManager';
+import { GAME_STATE, SFX } from '../util/Enums';
 import { customEvent, playerName, setPlayerName } from '../util/Utils';
 const { ccclass, property } = _decorator;
 
@@ -34,6 +35,7 @@ export class MainMenu extends Component {
 
     onStartButton() {
         customEvent.emit('gameStateChange', GAME_STATE.IN_GAME)
+        AudioManager.PlaySFX(SFX.CLICK);
     }
 }
 

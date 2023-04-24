@@ -15,25 +15,54 @@ export class AudioManager extends Component {
 
     private static instance: AudioManager = null;
 
-    protected onLoad(): void {
+    onLoad() {
         AudioManager.instance = this;
+    }
+
+    start() {
         this.playBGM();
     }
 
     playBGM() {
         this.musicSource.clip = this.bgm;
-        this.musicSource.volume = audioMute ? 0 : 1;
+        this.musicSource.volume = audioMute ? 0 : 0.5;
         this.musicSource.play();
     }
 
-    mute() {
+    toggleMute() {
         setAudioMute(!audioMute)
-        this.musicSource.volume = audioMute ? 0 : 1
+        this.musicSource.volume = audioMute ? 0 : 0.5
         this.sfxSource.volume = audioMute ? 0 : 1
     }
 
     playSFX(sfx: SFX) {
         this.sfxSource.playOneShot(this.sfx[sfx], audioMute ? 0 : 1)
+    }
+
+    playWalk() {
+        this.sfxSource.clip = this.sfx[SFX.WALK];
+        this.sfxSource.volume = audioMute ? 0 : 1
+        this.sfxSource.play();
+    }
+
+    stopWalk() {
+        this.sfxSource.stop();
+    }
+
+    static PlaySFX(sfx: SFX) {
+        this.instance.playSFX(sfx)
+    }
+
+    static PlayWalk() {
+        this.instance.playWalk()
+    }
+
+    static StopWalk() {
+        this.instance.stopWalk()
+    }
+
+    static ToggleMute() {
+        this.instance.toggleMute();
     }
 
 }

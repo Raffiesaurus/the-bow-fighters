@@ -5,6 +5,7 @@ import { customEvent } from '../util/Utils';
 import { AIAnims } from './AIAnims';
 import { Arrow } from './Arrow';
 import { Character } from './Character';
+import { AudioManager } from '../managers/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('AICharacter')
@@ -60,6 +61,7 @@ export class AICharacter extends Character {
         if (this.isHit) {
             if (randomRangeInt(0, 101) > 5) {
                 this.aiAnims.onWalk(true)
+                AudioManager.PlayWalk();
                 if (randomRangeInt(0, 2)) {
                     // let moveCount = 10
                     let moveCount = randomRange(15, 40);
@@ -74,6 +76,7 @@ export class AICharacter extends Character {
         } else {
             if (randomRangeInt(0, 101) > 25) {
                 this.aiAnims.onWalk(true)
+                AudioManager.PlayWalk();
                 if (randomRangeInt(0, 2)) {
                     let moveCount = randomRange(15, 40);
                     tween(this.node).to(1, { position: v3(this.node.position.x + moveCount, this.node.position.y, this.node.position.z) }, { easing: easing.smooth }).start();
@@ -90,6 +93,7 @@ export class AICharacter extends Character {
 
     stopMovement() {
         this.aiAnims.onWalk(false)
+        AudioManager.StopWalk();
     }
 
     aim() {
@@ -101,7 +105,7 @@ export class AICharacter extends Character {
         aimVec = Vec3.subtract(aimVec, playerPos, this.node.worldPosition);
         // aimVec = Vec3.normalize(aimVec, aimVec);
 
-        this.power = aimVec.length() / randomRange(12, 14);
+        this.power = aimVec.length() / randomRange(12.25, 13.75);
 
         tween(this)
             .to(0.5, { power: this.power }, {
