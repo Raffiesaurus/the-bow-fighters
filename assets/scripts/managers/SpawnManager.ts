@@ -5,10 +5,13 @@ const { ccclass, property } = _decorator;
 export class SpawnManager extends Component {
 
     @property(Prefab) private arrowPrefab: Prefab = null;
+    static get ArrowPrefab() {
+        return this.instance.arrowPrefab;
+    }
 
     @property(Node) private projectileParent: Node = null;
     static get ProjectileParent() {
-        return SpawnManager.instance.projectileParent;
+        return this.instance.projectileParent;
     }
     private arrowPool: NodePool = new NodePool();
 

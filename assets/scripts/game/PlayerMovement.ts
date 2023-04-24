@@ -1,5 +1,6 @@
 import { _decorator, BoxCollider2D, Component, Contact2DType, EventKeyboard, Input, input, IPhysics2DContact, KeyCode, RigidBody2D, v2, v3 } from 'cc';
 import { COLLIDER_GROUPS } from '../util/Enums';
+import { PlayerAnims } from './PlayerAnims';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerMovement')
@@ -20,15 +21,28 @@ export class PlayerMovement extends Component {
 
     private isGrounded: boolean = true;
 
+    private playerAnim: PlayerAnims = null;
+
     private bodyCollider: BoxCollider2D = null
 
     onLoad() {
-        input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-        input.on(Input.EventType.KEY_PRESSING, this.onKeyPressed, this);
-        input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
         this.rb = this.node.getComponent(RigidBody2D);
         this.bodyCollider = this.node.getComponents(BoxCollider2D).filter(x => x.group == COLLIDER_GROUPS.BODY)[0]
         this.bodyCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this)
+        this.playerAnim = this.node.getComponent(PlayerAnims);
+    }
+
+    turnOnInput() {
+        input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+        input.on(Input.EventType.KEY_PRESSING, this.onKeyPressed, this);
+        input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
+    }
+
+    turnOffInput() {
+        input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+        input.off(Input.EventType.KEY_PRESSING, this.onKeyPressed, this);
+        input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
+        this.stopMovement();
     }
 
     onBeginContact(selfCollider: BoxCollider2D, otherCollider: BoxCollider2D, contact: IPhysics2DContact | null) {
@@ -40,6 +54,7 @@ export class PlayerMovement extends Component {
     onKeyDown(event: EventKeyboard) {
         if (event.keyCode == KeyCode.KEY_A || event.keyCode == KeyCode.ARROW_LEFT) {
             this.moveLeft = true;
+            this.playerAnim.onWalk(true)
         }
 
         if (event.keyCode == KeyCode.KEY_S || event.keyCode == KeyCode.ARROW_DOWN) {
@@ -50,6 +65,7 @@ export class PlayerMovement extends Component {
 
         if (event.keyCode == KeyCode.KEY_D || event.keyCode == KeyCode.ARROW_RIGHT) {
             this.moveRight = true;
+            this.playerAnim.onWalk(true)
         }
 
         if (event.keyCode == KeyCode.KEY_W || event.keyCode == KeyCode.ARROW_UP) {
@@ -115,6 +131,7 @@ export class PlayerMovement extends Component {
         this.moveRight = false;
         this.moveUp = false;
         // this.rb.linearVelocity = v2(0, 0)
+        this.playerAnim.onWalk(false)
     }
 }
 

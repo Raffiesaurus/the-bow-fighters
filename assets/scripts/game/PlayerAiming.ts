@@ -1,30 +1,65 @@
-import { _decorator, Component, EventMouse, Input, input, math, Node, toDegree, v2, v3, Vec2 } from 'cc';
+import { _decorator, EventMouse, Input, input, instantiate, math, Node, toDegree, v2, v3, Vec2 } from 'cc';
+import { GameManager } from '../managers/GameManager';
 import { SpawnManager } from '../managers/SpawnManager';
+import { customEvent } from '../util/Utils';
 import { Arrow } from './Arrow';
+import { Character } from './Character';
+import { PlayerAnims } from './PlayerAnims';
+import { PlayerMovement } from './PlayerMovement';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerAiming')
-export class PlayerAiming extends Component {
+export class PlayerAiming extends Character {
+
+    private playerAnim: PlayerAnims = null;
+    private playerMovement: PlayerMovement = null;
 
     private mousePos: Vec2 = v2();
     private bowPos: Vec2 = v2();
     private diffVec: Vec2 = v2();
 
-    private toCharge: boolean = false;
+    private isCharging: boolean = false;
+    private dragStartVec: Vec2 = v2();
+    private dragEndVec: Vec2 = v2();
 
     private power: number = 0;
 
     private minPower: number = 15;
-    private maxPower: number = 80;
+    private maxPower: number = 100;
 
     @property(Node) private bow: Node = null;
 
     @property(Node) private spawnPoint: Node = null;
 
     onLoad() {
+        super.onLoad();
+        this.playerAnim = this.node.getComponent(PlayerAnims);
+        this.playerMovement = this.node.getComponent(PlayerMovement);
+        customEvent.on('newTurn', this.onNewTurn, this);
+    }
+
+    onNewTurn() {
+        console.log('[Player Aim] New Turn: ', GameManager.isPlayerTurn)
+        if (GameManager.isPlayerTurn) {
+            this.turnOnInput();
+        } else {
+            this.turnOffInput();
+        }
+    }
+
+    turnOnInput() {
         input.on(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
         input.on(Input.EventType.MOUSE_DOWN, this.onMouseClick, this);
         input.on(Input.EventType.MOUSE_UP, this.onMouseRelease, this);
+        this.playerMovement.turnOnInput();
+    }
+
+    turnOffInput() {
+        input.off(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
+        input.off(Input.EventType.MOUSE_DOWN, this.onMouseClick, this);
+        input.off(Input.EventType.MOUSE_UP, this.onMouseRelease, this);
+        this.playerMovement.turnOffInput();
+        this.bow.eulerAngles = v3(0, 0, 0)
     }
 
     onMouseMove(event: EventMouse) {
@@ -36,45 +71,53 @@ export class PlayerAiming extends Component {
         if (this.diffVec.y < 0) {
             angle += (-angle * 2)
         }
-        angle = math.clamp(angle, -80, 80);
+        angle = math.clamp(angle, -50, 50);
         this.bow.eulerAngles = v3(0, 0, angle)
+
+        if (this.isCharging) {
+
+            this.dragEndVec = event.getLocation();
+            let dist = Vec2.distance(this.dragStartVec, this.dragEndVec);
+
+            let powerLevel = math.clamp((Math.floor(dist / 100)), 0, 2);
+
+            this.power = math.clamp(dist / 4, this.minPower, this.maxPower);
+
+            this.playerAnim.onAim(powerLevel);
+
+        }
+
+
     }
 
-    onMouseClick() {
-        this.charge();
+    onMouseClick(event: EventMouse) {
+        this.isCharging = true;
+        this.dragStartVec = event.getLocation();
     }
 
-    onMouseRelease() {
+    onMouseRelease(event: EventMouse) {
+        this.isCharging = false;
+        this.playerAnim.onAim(0);
         this.fire();
     }
 
-    charge() {
-        this.toCharge = true;
-    }
-
     fire() {
-        this.toCharge = false;
+        this.isCharging = false;
         if (this.power < this.minPower) {
             return;
         }
-        // Fire arrow
-        let arrow = SpawnManager.GetArrow();
-        arrow.setParent(SpawnManager.ProjectileParent);
-        arrow.setWorldPosition(this.spawnPoint.worldPosition);
-        arrow.getComponent(Arrow).fire(v2(this.bow.right.x, this.bow.right.y), this.power)
 
-        this.power = 0;
-    }
 
-    protected update(dt: number): void {
-        if (this.toCharge) {
-            this.power += 1;
-            console.log('this.power: ', this.power);
-            if (this.power >= this.maxPower) {
-                this.toCharge = false;
-                this.power = this.maxPower;
-            }
+        if (GameManager.isPlayerTurn) {
+            let arrow = instantiate(SpawnManager.ArrowPrefab);
+            arrow.setParent(SpawnManager.ProjectileParent);
+            arrow.setWorldPosition(this.spawnPoint.worldPosition);
+            let direction = this.bow.right.clone()
+            arrow.getComponent(Arrow).fire(v2(direction.x, direction.y), this.power)
         }
+
+        this.turnOffInput();
+        this.power = 0;
     }
 }
 

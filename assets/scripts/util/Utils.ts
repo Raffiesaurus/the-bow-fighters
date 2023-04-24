@@ -1,4 +1,6 @@
-import { Vec2, v2 } from "cc";
+import { EventTarget, Vec2, sys, v2 } from "cc";
+
+export const customEvent = new EventTarget();
 
 export const clampMagnitude = (vector: Vec2, maxLength: number): Vec2 => {
     let magnitude = vector.length();
@@ -30,3 +32,26 @@ export const interpolate = (inputValue: number, minInput, maxInput, minOutput, m
     }
     return outputValue;
 }
+
+export let playerName: string = 'PLAYER';
+export const setPlayerName = (name: string) => {
+    playerName = name.toUpperCase();
+}
+
+export let audioMute: boolean = false;
+export const setAudioMute = (mute: boolean) => {
+    audioMute = mute;
+    sys.localStorage.setItem('mute', String(audioMute));
+}
+
+export const checkLocalStorage = () => {
+
+    let mute = sys.localStorage.getItem('mute');
+    if (mute == null) {
+        setAudioMute(true);
+    } else {
+        audioMute = mute === 'true';
+    }
+
+}
+
