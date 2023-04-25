@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider2D, Component, Contact2DType, EventKeyboard, Input, input, IPhysics2DContact, KeyCode, RigidBody2D, v2, v3 } from 'cc';
+import { _decorator, BoxCollider2D, Component, Contact2DType, EventKeyboard, Input, input, IPhysics2DContact, KeyCode, math, RigidBody2D, v2, v3 } from 'cc';
 import { AudioManager } from '../managers/AudioManager';
 import { COLLIDER_GROUPS, SFX } from '../util/Enums';
 import { PlayerAnims } from './PlayerAnims';
@@ -11,7 +11,7 @@ export class PlayerMovement extends Component {
     private maxSpeed: number = 10;
 
     private jumpSideForce: number = 100;
-    private jumpForce: number = 2000;
+    private jumpForce: number = 1000;
 
     private rb: RigidBody2D = null;
 
@@ -49,6 +49,7 @@ export class PlayerMovement extends Component {
     onBeginContact(selfCollider: BoxCollider2D, otherCollider: BoxCollider2D, contact: IPhysics2DContact | null) {
         if (otherCollider.group == COLLIDER_GROUPS.LAND || otherCollider.group == COLLIDER_GROUPS.STEP) {
             this.isGrounded = true;
+            this.playerAnim.onLand();
         }
     }
 
@@ -76,6 +77,7 @@ export class PlayerMovement extends Component {
                 this.moveUp = true;
                 this.rb.gravityScale = 1;
                 this.isGrounded = false;
+                this.playerAnim.onJump();
                 AudioManager.PlaySFX(SFX.JUMP)
                 if (this.moveLeft) {
                     this.rb.applyForceToCenter(v2(-this.jumpSideForce, this.jumpForce), true);
@@ -127,7 +129,9 @@ export class PlayerMovement extends Component {
 
     }
 
-
+    update() {
+        this.node.setPosition(math.clamp(this.node.position.x, -650, 650), this.node.position.y, this.node.position.z);
+    }
 
     stopMovement() {
         this.moveLeft = false;

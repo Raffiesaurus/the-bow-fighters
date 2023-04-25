@@ -1,5 +1,6 @@
-import { _decorator, CCBoolean, CCInteger, Component } from 'cc';
-import { GAME_STATE } from '../util/Enums';
+import { _decorator, CCBoolean, CCInteger, Component, v3, Vec3 } from 'cc';
+import { AudioManager } from '../managers/AudioManager';
+import { GAME_STATE, SFX } from '../util/Enums';
 import { customEvent } from '../util/Utils';
 const { ccclass, property } = _decorator;
 
@@ -11,6 +12,10 @@ export class Character extends Component {
 
     @property(CCBoolean) isPlayer: boolean = true;
 
+    @property(Vec3) private spawnPointVector: Vec3 = v3()
+
+    private isDead: boolean = false;
+
     onLoad() {
         customEvent.on('gameStateChange', this.onStateChange, this);
     }
@@ -19,6 +24,7 @@ export class Character extends Component {
         switch (state) {
             case GAME_STATE.MAIN_MENU:
                 this.health = 100;
+                this.node.setPosition(this.spawnPointVector);
                 break;
         }
     }
@@ -51,12 +57,22 @@ export class Character extends Component {
     }
 
     die() {
+        AudioManager.PlaySFX(SFX.SCREAM);
+        this.isDead = true;
         if (this.isPlayer) {
             customEvent.emit("playerDeath")
             customEvent.emit('gameStateChange', GAME_STATE.DEFEAT);
         } else {
             customEvent.emit("oppDeath")
             customEvent.emit('gameStateChange', GAME_STATE.WIN);
+        }
+    }
+
+    protected update(dt: number): void {
+        if (this.isDead) return;
+
+        if (this.node.position.y < -250) {
+            this.die();
         }
     }
 }

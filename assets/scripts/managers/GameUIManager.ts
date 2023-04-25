@@ -54,11 +54,15 @@ export class GameUIManager extends Component {
                 break;
             case GAME_STATE.DEFEAT:
                 this.pauseTimer();
-                this.gameOverPanel.init(false);
+                this.scheduleOnce(() => {
+                    this.gameOverPanel.init(false);
+                }, 1)
                 break;
             case GAME_STATE.WIN:
                 this.pauseTimer();
-                this.gameOverPanel.init(true);
+                this.scheduleOnce(() => {
+                    this.gameOverPanel.init(true);
+                }, 1)
                 break;
         }
     }

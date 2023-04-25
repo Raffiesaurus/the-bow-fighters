@@ -20,6 +20,13 @@ export class CameraFollow extends Component {
 
     onStateChange(state: GAME_STATE) {
         switch (state) {
+            case GAME_STATE.WIN:
+                this.scheduleOnce(this.zoomOutToFull, 0.25)
+                break;
+
+            case GAME_STATE.DEFEAT:
+                this.scheduleOnce(this.zoomOutToFull, 0.25)
+                break;
         }
     }
 

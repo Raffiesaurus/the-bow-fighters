@@ -90,6 +90,11 @@ export class PlayerAiming extends Character {
 
     }
 
+    getHit(dmg: number) {
+        super.getHit(dmg);
+        this.playerAnim.onGetHit();
+    }
+
     onMouseClick(event: EventMouse) {
         this.isCharging = true;
         this.dragStartVec = event.getLocation();

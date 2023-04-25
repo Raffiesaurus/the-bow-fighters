@@ -10,6 +10,8 @@ export enum BODY_ANIMS {
     WALK = 'char-walk',
     IDLE = 'char-idle',
     DIE = 'char-die',
+    JUMP = 'char-jump',
+    VICTORY = 'char-victory',
 }
 
 export enum GAME_STATE {
@@ -30,4 +32,7 @@ export enum SFX {
     JUMP = 4,
     POWERUP_ACTIVATE = 5,
     WALK = 6,
+    LOSS = 7,
+    VICTORY = 8,
+    SCREAM = 9,
 }

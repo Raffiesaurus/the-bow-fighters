@@ -1,4 +1,4 @@
-import { _decorator, Animation, Component, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Animation, Color, Component, Sprite, SpriteFrame, tween } from 'cc';
 import { BODY_ANIMS, GAME_STATE } from '../util/Enums';
 import { customEvent } from '../util/Utils';
 const { ccclass, property } = _decorator;
@@ -61,6 +61,45 @@ export class AIAnims extends Component {
         }
     }
 
+    onJump() {
+        this.onAim(0);
+        this.bodyAnim.play(BODY_ANIMS.JUMP);
+    }
+
+    onLand() {
+        this.onAim(0);
+    }
+
+    onGetHit() {
+        // this.schedule(this.redColor, 0.5, 2, 0)
+        // this.schedule(this.normalColor, 1, 2, 0.5)
+        tween(this.node)
+            .call(() => { this.redColor() })
+            .delay(0.25)
+            .call(() => { this.normalColor() })
+            .delay(0.25)
+            .call(() => { this.redColor() })
+            .delay(0.25)
+            .call(() => { this.normalColor() })
+            .delay(0.25)
+            .call(() => { this.redColor() })
+            .delay(0.25)
+            .call(() => { this.normalColor() })
+            .start();
+    }
+
+    redColor() {
+        this.leftArm.color = new Color(255, 0, 0, 255);
+        this.rightArm.color = new Color(255, 0, 0, 255);
+        this.body.color = new Color(255, 0, 0, 255);
+    }
+
+    normalColor() {
+        this.leftArm.color = new Color(255, 255, 255, 255);
+        this.rightArm.color = new Color(255, 255, 255, 255);
+        this.body.color = new Color(255, 255, 255, 255);
+    }
+
     onAim(powerLevel: number) {
         let bodyNum: number = 0;
         let leftArmNum: number = 0;
@@ -100,13 +139,17 @@ export class AIAnims extends Component {
     }
 
     onVictory() {
-
+        this.scheduleOnce(() => {
+            this.bodyAnim.play(BODY_ANIMS.VICTORY);
+        }, 0.5)
     }
 
     onDie() {
-        this.rightArm.node.active = false;
-        this.leftArm.node.active = false;
-        this.bodyAnim.play(BODY_ANIMS.DIE);
+        this.scheduleOnce(() => {
+            this.rightArm.node.active = false;
+            this.leftArm.node.active = false;
+            this.bodyAnim.play(BODY_ANIMS.DIE);
+        }, 0.5)
     }
 
 }

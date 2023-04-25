@@ -1,9 +1,9 @@
-import { _decorator, BoxCollider2D, Component, Contact2DType, IPhysics2DContact, misc, RigidBody2D, v2, v3, Vec2 } from 'cc';
+import { _decorator, BoxCollider2D, Component, Contact2DType, IPhysics2DContact, misc, ParticleSystem2D, RigidBody2D, v2, v3, Vec2 } from 'cc';
+import { AudioManager } from '../managers/AudioManager';
 import { GameUIManager } from '../managers/GameUIManager';
 import { COLLIDER_GROUPS, SFX } from '../util/Enums';
 import { customEvent } from '../util/Utils';
 import { Character } from './Character';
-import { AudioManager } from '../managers/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Arrow')
@@ -12,6 +12,8 @@ export class Arrow extends Component {
     @property(BoxCollider2D) private collider: BoxCollider2D = null;
 
     @property(RigidBody2D) private rb: RigidBody2D = null;
+
+    @property(ParticleSystem2D) private particles: ParticleSystem2D = null;
 
     private directionVector: Vec2 = v2()
 
@@ -29,6 +31,12 @@ export class Arrow extends Component {
         }, 0.01)
         this.scheduleOnce(this.killNode, 4);
         GameUIManager.PauseTimer();
+
+        if (this.directionVector.x > 0) {
+            this.particles.gravity.x = -1680
+        } else {
+            this.particles.gravity.x = 1680
+        }
     }
 
     onBeginContact(selfCollider: BoxCollider2D, otherCollider: BoxCollider2D, contact: IPhysics2DContact | null) {

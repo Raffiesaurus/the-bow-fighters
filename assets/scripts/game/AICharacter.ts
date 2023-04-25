@@ -1,11 +1,11 @@
 import { _decorator, easing, instantiate, math, Node, randomRange, randomRangeInt, toDegree, tween, v2, v3, Vec3 } from 'cc';
+import { AudioManager } from '../managers/AudioManager';
 import { GameManager } from '../managers/GameManager';
 import { SpawnManager } from '../managers/SpawnManager';
 import { customEvent } from '../util/Utils';
 import { AIAnims } from './AIAnims';
 import { Arrow } from './Arrow';
 import { Character } from './Character';
-import { AudioManager } from '../managers/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('AICharacter')
@@ -57,6 +57,11 @@ export class AICharacter extends Character {
 
     }
 
+    getHit(dmg: number) {
+        super.getHit(dmg);
+        this.aiAnims.onGetHit();
+    }
+
     move() {
         if (this.isHit) {
             if (randomRangeInt(0, 101) > 5) {
@@ -99,13 +104,13 @@ export class AICharacter extends Character {
     aim() {
         this.stopMovement();
         let playerPos = GameManager.GetPlayerCharacter().node.getWorldPosition().clone();
-        playerPos.y += randomRange(0, 100);
+        // playerPos.y += randomRange(5, 10);
 
         let aimVec: Vec3 = v3();
         aimVec = Vec3.subtract(aimVec, playerPos, this.node.worldPosition);
         // aimVec = Vec3.normalize(aimVec, aimVec);
 
-        this.power = aimVec.length() / randomRange(12.25, 13.75);
+        this.power = aimVec.length() / randomRange(14, 14.5)
 
         tween(this)
             .to(0.5, { power: this.power }, {
@@ -116,12 +121,14 @@ export class AICharacter extends Character {
             })
             .start()
 
-        let angle = Vec3.angle(aimVec, v3(-1, 0, 0));
-        angle = toDegree(angle) - 180
-        if (aimVec.y < 0) {
-            angle += (-angle * 2)
-        }
-        angle = math.clamp(angle, -50, 50);
+        // let angle = Vec3.angle(aimVec, v3(-1, 0, 0));
+        // angle = toDegree(angle) - 180
+        // if (aimVec.y < 0) {
+        //     angle += (-angle * 2)
+        // }
+        // angle = math.clamp(angle, -50, 50);
+
+        let angle = randomRange(20, 50);
 
         tween(this.bow).to(0.5, { eulerAngles: v3(0, 0, angle) }, { easing: easing.smooth }).start();
 

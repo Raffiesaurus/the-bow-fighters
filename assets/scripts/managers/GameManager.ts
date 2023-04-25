@@ -17,6 +17,7 @@ export class GameManager extends Component {
     private static instance: GameManager = null;
 
     onLoad() {
+        // console.log = function () { }
         GameManager.instance = this;
         customEvent.on('gameStateChange', this.onStateChange, this);
         customEvent.on('turnChange', this.onTurnChange, this);
@@ -35,7 +36,7 @@ export class GameManager extends Component {
             GameManager.isPlayerTurn = !GameManager.isPlayerTurn;
             if (!GameManager.isGameOver)
                 customEvent.emit('newTurn');
-                customEvent.emit('zoomIn', GameManager.isPlayerTurn);
+            customEvent.emit('zoomIn', GameManager.isPlayerTurn);
         }, timeDelay)
     }
 
