@@ -101,6 +101,9 @@ export class PlayerAnims extends Component {
     }
 
     onAim(powerLevel: number) {
+        if (powerLevel == 0) {
+            this.bodyAnim.stop()    
+        }
         let bodyNum: number = 0;
         let leftArmNum: number = 0;
         let rightArmNum: number = 0;
