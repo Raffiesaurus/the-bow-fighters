@@ -17,7 +17,7 @@ export class GameManager extends Component {
     private static instance: GameManager = null;
 
     onLoad() {
-        // console.log = function () { }
+        console.log = function () { }
         GameManager.instance = this;
         customEvent.on('gameStateChange', this.onStateChange, this);
         customEvent.on('turnChange', this.onTurnChange, this);

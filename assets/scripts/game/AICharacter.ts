@@ -110,7 +110,8 @@ export class AICharacter extends Character {
         aimVec = Vec3.subtract(aimVec, playerPos, this.node.worldPosition);
         // aimVec = Vec3.normalize(aimVec, aimVec);
 
-        this.power = aimVec.length() / randomRange(14, 14.5)
+        this.power = aimVec.length() / randomRange(12, 13.5)
+        // console.log('power: ', this.power);
 
         tween(this)
             .to(0.5, { power: this.power }, {
@@ -128,7 +129,7 @@ export class AICharacter extends Character {
         // }
         // angle = math.clamp(angle, -50, 50);
 
-        let angle = randomRange(20, 50);
+        let angle = randomRange(-35, -15);
 
         tween(this.bow).to(0.5, { eulerAngles: v3(0, 0, angle) }, { easing: easing.smooth }).start();
 

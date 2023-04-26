@@ -23,11 +23,11 @@ export class Arrow extends Component {
         AudioManager.PlaySFX(SFX.FIRE_BOW)
         customEvent.emit('zoomOut');
         this.node.eulerAngles = v3(0, 0, 0);
-        this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this)
         this.directionVector = direction.clone();
         this.rb.applyForceToCenter(this.directionVector.multiplyScalar(force), true);
         this.scheduleOnce(() => {
             this.useForce = true;
+            this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this)
         }, 0.01)
         this.scheduleOnce(this.killNode, 4);
         GameUIManager.PauseTimer();
