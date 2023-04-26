@@ -110,7 +110,7 @@ export class AICharacter extends Character {
         aimVec = Vec3.subtract(aimVec, playerPos, this.node.worldPosition);
         // aimVec = Vec3.normalize(aimVec, aimVec);
 
-        this.power = aimVec.length() / randomRange(12, 13.5)
+        this.power = aimVec.length() / 12.5//randomRange(12, 12)
         // console.log('power: ', this.power);
 
         tween(this)
@@ -147,5 +147,8 @@ export class AICharacter extends Character {
         this.aiAnims.onAim(0);
     }
 
+    update() {
+        this.node.setPosition(math.clamp(this.node.position.x, -650, 650), this.node.position.y, this.node.position.z);
+    }
 }
 

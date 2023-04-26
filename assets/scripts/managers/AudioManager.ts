@@ -26,6 +26,7 @@ export class AudioManager extends Component {
     playBGM() {
         this.musicSource.clip = this.bgm;
         this.musicSource.volume = audioMute ? 0 : 0.5;
+        this.musicSource.loop = true;
         this.musicSource.play();
     }
 

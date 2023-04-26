@@ -34,9 +34,10 @@ export class GameManager extends Component {
         }
         this.scheduleOnce(() => {
             GameManager.isPlayerTurn = !GameManager.isPlayerTurn;
-            if (!GameManager.isGameOver)
+            if (!GameManager.isGameOver) {
                 customEvent.emit('newTurn');
-            customEvent.emit('zoomIn', GameManager.isPlayerTurn);
+                customEvent.emit('zoomIn', GameManager.isPlayerTurn);
+            }
         }, timeDelay)
     }
 
