@@ -4,6 +4,7 @@ import { GameUIManager } from '../managers/GameUIManager';
 import { COLLIDER_GROUPS, SFX } from '../util/Enums';
 import { customEvent } from '../util/Utils';
 import { Character } from './Character';
+import { GameManager } from '../managers/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Arrow')
@@ -20,16 +21,18 @@ export class Arrow extends Component {
     private useForce: boolean = false;
 
     fire(direction: Vec2, force: number) {
+        customEvent.on('killArrow', this.killNode, this);
         AudioManager.PlaySFX(SFX.FIRE_BOW)
         customEvent.emit('zoomOut');
         this.node.eulerAngles = v3(0, 0, 0);
         this.directionVector = direction.clone();
         this.rb.applyForceToCenter(this.directionVector.multiplyScalar(force), true);
+        GameManager.isArrowMidFlight = true;
         this.scheduleOnce(() => {
             this.useForce = true;
             this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this)
         }, 0.01)
-        this.scheduleOnce(this.killNode, 4);
+        this.scheduleOnce(this.killNode, 3);
         GameUIManager.PauseTimer();
 
         if (this.directionVector.x > 0) {
@@ -58,11 +61,14 @@ export class Arrow extends Component {
         }
     }
 
-    killNode() {
+    killNode(emitTurn: boolean = true) {
+        customEvent.off('killArrow', this.killNode, this);
         this.unschedule(this.killNode);
         this.useForce = false;
         this.rb.linearVelocity.set(v2())
-        customEvent.emit('turnChange')
+        GameManager.isArrowMidFlight = false;
+        if (emitTurn)
+            customEvent.emit('turnChange')
         this.node.destroy()
     }
 

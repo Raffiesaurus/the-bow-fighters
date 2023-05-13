@@ -1,4 +1,4 @@
-import { _decorator, EventMouse, Input, input, instantiate, math, Node, toDegree, v2, v3, Vec2 } from 'cc';
+import { _decorator, Input, input, instantiate, math, Node, toDegree, v2, v3, Vec2 } from 'cc';
 import { GameManager } from '../managers/GameManager';
 import { SpawnManager } from '../managers/SpawnManager';
 import { customEvent } from '../util/Utils';
@@ -48,21 +48,32 @@ export class PlayerAiming extends Character {
     }
 
     turnOnInput() {
-        input.on(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
-        input.on(Input.EventType.MOUSE_DOWN, this.onMouseClick, this);
-        input.on(Input.EventType.MOUSE_UP, this.onMouseRelease, this);
+        input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
+        input.on(Input.EventType.TOUCH_END, this.onTouchEnd, this);
+        input.on(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+
+        input.on(Input.EventType.MOUSE_MOVE, this.onTouchMove, this);
+        input.on(Input.EventType.MOUSE_DOWN, this.onTouchStart, this);
+        input.on(Input.EventType.MOUSE_UP, this.onTouchEnd, this);
+
         this.playerMovement.turnOnInput();
     }
 
     turnOffInput() {
-        input.off(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
-        input.off(Input.EventType.MOUSE_DOWN, this.onMouseClick, this);
-        input.off(Input.EventType.MOUSE_UP, this.onMouseRelease, this);
+        input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        input.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
+        input.off(Input.EventType.TOUCH_END, this.onTouchEnd, this);
+        input.off(Input.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+
+        input.off(Input.EventType.MOUSE_MOVE, this.onTouchMove, this);
+        input.off(Input.EventType.MOUSE_DOWN, this.onTouchStart, this);
+        input.off(Input.EventType.MOUSE_UP, this.onTouchEnd, this);
         this.playerMovement.turnOffInput();
         this.bow.eulerAngles = v3(0, 0, 0)
     }
 
-    onMouseMove(event: EventMouse) {
+    onTouchMove(event: any) {
         this.mousePos = event.getLocation();
         this.diffVec = Vec2.subtract(this.diffVec, v2(this.bow.getWorldPosition().x, this.bow.getWorldPosition().y), this.mousePos);
         this.diffVec = this.diffVec.normalize()
@@ -95,15 +106,19 @@ export class PlayerAiming extends Character {
         this.playerAnim.onGetHit();
     }
 
-    onMouseClick(event: EventMouse) {
+    onTouchStart(event: any) {
         this.isCharging = true;
         this.dragStartVec = event.getLocation();
     }
 
-    onMouseRelease(event: EventMouse) {
+    onTouchEnd(event: any) {
         this.isCharging = false;
         this.playerAnim.onAim(0);
         this.fire();
+    }
+
+    onTouchCancel(event: any) {
+        this.onTouchEnd(event);
     }
 
     fire() {

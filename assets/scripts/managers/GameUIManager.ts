@@ -36,6 +36,7 @@ export class GameUIManager extends Component {
             .to(0.25, { fillRange: 1 }, { easing: easing.smooth })
             .to(5, { fillRange: 0 }, { easing: easing.smooth })
             .call(() => {
+                customEvent.emit('killArrow', false);
                 customEvent.emit('turnChange')
             })
     }

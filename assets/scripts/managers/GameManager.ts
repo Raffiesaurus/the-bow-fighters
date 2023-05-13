@@ -10,7 +10,7 @@ export class GameManager extends Component {
     @property(PlayerAiming) private playerChar: PlayerAiming = null;
 
     public static isInGame: boolean = false;
-
+    public static isArrowMidFlight: boolean = false;
     public static isPlayerTurn: boolean = false;
     public static isGameOver: boolean = false;
 
@@ -33,8 +33,8 @@ export class GameManager extends Component {
             timeDelay = 1;
         }
         this.scheduleOnce(() => {
-            GameManager.isPlayerTurn = !GameManager.isPlayerTurn;
-            if (!GameManager.isGameOver) {
+            if (!GameManager.isGameOver && !GameManager.isArrowMidFlight) {
+                GameManager.isPlayerTurn = !GameManager.isPlayerTurn;
                 customEvent.emit('newTurn');
                 customEvent.emit('zoomIn', GameManager.isPlayerTurn);
             }
